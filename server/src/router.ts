@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 router.post('/pay', (req, res)=>{
-    res.send(`quit`)
+    res.json({})
 })
 
 export default router;

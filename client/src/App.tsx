@@ -1,34 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useState } from 'react';
+import Input from './components/Input';
+import CreditCard from './components/CreditCard';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+interface ICardDetails {
+	cardNumber: number;
+	expirationDate: any;
+	cvv: number;
 }
 
-export default App
+function App() {
+	const [cardDetails, setCardDetails] = useState<ICardDetails>({
+		cardNumber: 0,
+		expirationDate: null,
+		cvv: 0,
+	});
+
+	const handleChange = (event: any) => {
+		const { name, value } = event.target;
+		setCardDetails((prevData) => ({
+			...prevData,
+			[name]: value,
+		}));
+	};
+	return (
+		<div className='main'>
+			<p className='bg-text'>Payment Checkout</p>
+			<div className='checkout'>
+				<CreditCard />
+				<div style={{paddingLeft:"20px"}}>
+					<p className='small-text'>Enter your card details here.</p>
+					<div className='card-input'>
+						<Input
+							label={'Card Number'}
+							type='number'
+							handleChange={handleChange}
+							name='cardNumber'
+						/>
+						<Input
+							label={'Expiration Date'}
+							type='date'
+							handleChange={handleChange}
+							name='expirationDate'
+						/>
+						<Input
+							label={'CVV'}
+							type='number'
+							handleChange={handleChange}
+							name='cvv'
+						/>
+						<button
+							className='btn'
+							onClick={() => {
+								console.log(cardDetails);
+							}}
+						>
+							Confirm Payment
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+export default App;

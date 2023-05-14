@@ -11,3 +11,4 @@ npm install
 
 # Navigate back to the root directory
 cd ..
+npm run dev
