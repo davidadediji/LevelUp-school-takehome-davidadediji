@@ -1,5 +1,6 @@
 #!/bin/bash
-
+#Install dependencies at root level
+npm install
 # Install server-side dependencies
 cd server
 npm install
