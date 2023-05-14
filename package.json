@@ -1,0 +1,16 @@
+{
+  "name": "levelup-assessment",
+  "version": "1.0.0",
+  "description": "Repository for levelup take home assessment",
+  "main": "server/app.ts",
+  "scripts": {
+    "server":"npm run dev:server --prefix server",
+    "client":"npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "author": "David Adediji",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
