@@ -1,59 +1,75 @@
 import { useState } from 'react';
-import Input from './components/Input';
 import CreditCard from './components/CreditCard';
+import Cleave from 'cleave.js/react';
+import axios,{AxiosError} from 'axios';
+import Card from './components/Card';
 
-interface ICardDetails {
-	cardNumber: number;
-	expirationDate: any;
-	cvv: number;
+interface IResponseData{
+	status:string
+	message:string
 }
 
 function App() {
-	const [cardDetails, setCardDetails] = useState<ICardDetails>({
-		cardNumber: 0,
-		expirationDate: null,
-		cvv: 0,
-	});
+	const [cardNumber, setcardNumber] = useState('');
+	const [expirationDate, setExpirationDate] = useState('');
+	const [cvv, setCvv] = useState('');
+	const [response, setResponse] = useState<IResponseData>();
 
-	const handleChange = (event: any) => {
-		const { name, value } = event.target;
-		setCardDetails((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
+	const handleSubmit = async (e: any) => {
+		e.preventDefault();
+		try {
+			const response = await axios.post('http://localhost:3000/api/v1/pay', {
+				cardNumber: cardNumber,
+				expirationDate: expirationDate,
+				cvv: cvv,
+			});
+			setResponse(response.data)
+		} catch (error:any) {
+			setResponse(error.response?.data)
+		}
 	};
+
 	return (
 		<div className='main'>
 			<p className='bg-text'>Payment Checkout</p>
 			<div className='checkout'>
 				<CreditCard />
-				<div style={{paddingLeft:"20px"}}>
+				{response && <Card message={response.message} responseStatus={response.status}/>}
+				<div style={{ paddingLeft: '20px' }}>
 					<p className='small-text'>Enter your card details here.</p>
 					<div className='card-input'>
-						<Input
-							label={'Card Number'}
-							type='number'
-							handleChange={handleChange}
-							name='cardNumber'
-						/>
-						<Input
-							label={'Expiration Date'}
-							type='date'
-							handleChange={handleChange}
-							name='expirationDate'
-						/>
-						<Input
-							label={'CVV'}
-							type='number'
-							handleChange={handleChange}
-							name='cvv'
-						/>
-						<button
-							className='btn'
-							onClick={() => {
-								console.log(cardDetails);
-							}}
-						>
+						<div>
+							<p>Card Number</p>
+							<Cleave
+								className='card'
+								placeholder='Card Number'
+								options={{ creditCard: true, creditCardType:'amex' }}
+								value={cardNumber}
+								onChange={(e) => setcardNumber(e.target.value)}
+							/>
+						</div>
+						<div>
+							<p>Expiration Date</p>
+							<Cleave
+								className='card'
+								placeholder='MM/YY'
+								value={expirationDate}
+								options={{ date: true, datePattern: ['m', 'y'] }}
+								onChange={(e) => setExpirationDate(e.target.value)}
+							/>
+						</div>
+						<div>
+							<p>CVV</p>
+							<Cleave
+								className='card'
+								placeholder='CVV'
+								options={{ blocks: [4], numericOnly: true }}
+								value={cvv}
+								onChange={(e) => setCvv(e.target.value)}
+							/>
+						</div>
+
+						<button className='btn' onClick={handleSubmit}>
 							Confirm Payment
 						</button>
 					</div>
